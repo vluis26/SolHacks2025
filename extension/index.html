@@ -3,10 +3,70 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Google Calendars</title>
     <script src="popup.js" type="module"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            width: 320px;
+            padding: 15px;
+            margin: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .card {
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .profile {
+            display: flex;
+            flex-direction: row;
+        }
+        button {
+            background-color: #4285F4;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+        button:hover {
+            background-color: #3367D6;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .hidden { display: none; }
+    </style>
 </head>
 <body>
-    <button id="login-button">Login with OAuth</button>
+    <div class="container">
+        <div class="card">
+            <h2>Syllabyte</h2>
+            <div id="authenticated" class="hidden">
+                <p>Open your syllabus PDF in this tab and load all exams, quizzes, and class info into your Google Calendar!</p>
+                
+                <h4>Upload your PDF</h4>
+                <button id="uploadPdf">Upload PDF and Load to Google Calendar</button>
+
+                <div id="profile">
+                    <p id="profileEmail" class="profile-email" style="font-size: 12px; color: #666;"></p>
+                    <button id="logout-button">Logout</button>
+                </div>
+            </div>
+            <div id="unauthenticated">
+                <p>Connect your Google Account to get started!</p>
+                <button id="login-button">Connect your Google Account</button>
+            </div>        
+        </div>
+    </div>
 </body>
 </html>
