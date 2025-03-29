@@ -12,6 +12,16 @@ def pdf_to_text(pdf_path):
             text += page.extract_text() + "\n"
     return text
 
+#Function to extract class title 
+def extract_class_title(text):
+    pattern = r'\b[A-Za-z]{3,4}\s?\d{3,}\b'
+    matches = re.findall(pattern, text, re.IGNORECASE)
+
+    extracted_data = []
+    for data in matches:
+        extracted_data.append(data)
+    return extracted_data
+
 # Function to extract dates and assignments
 def extract_assignments(text):
     pattern = r"(\d{1,2}/\d{1,2})\s+(.*?(?:Quiz|Exam|Financial Plan|Paper|Due).*)"
@@ -50,22 +60,24 @@ def create_training_data(train_data, nlp):
 
 # Main execution
 if __name__ == "__main__":
-    pdf_path = "NER/PLAN 363 - Syllabus - Spring 2025 v3.pdf"
+    pdf_path = "NER/2-24 syllabus.pdf"
     
     print("Extracting text from PDF...")
     syllabus_text = pdf_to_text(pdf_path)
+    # print(extract_class_title(syllabus_text)[0])
+    print(syllabus_text)
 
-    print("Identifying assignments and dates...")
-    assignments = extract_assignments(syllabus_text)
+    # print("Identifying assignments and dates...")
+    # assignments = extract_assignments(syllabus_text)
 
-    for date, assignment in assignments:
-        print(f"{date} -> {assignment}")
+    # for date, assignment in assignments:
+    #     print(f"{date} -> {assignment}")
 
-    print("Formatting data for SpaCy training...")
-    nlp = spacy.blank("en")
-    db = create_training_data(assignments, nlp)
+    # print("Formatting data for SpaCy training...")
+    # nlp = spacy.blank("en")
+    # db = create_training_data(assignments, nlp)
 
-    training_data_path = "./training_data.spacy"
-    db.to_disk(training_data_path)
+    # training_data_path = "./training_data.spacy"
+    # db.to_disk(training_data_path)
 
-    print(f"Training data saved to {training_data_path}.")
+    # print(f"Training data saved to {training_data_path}.")
