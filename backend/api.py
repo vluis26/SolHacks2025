@@ -3,15 +3,20 @@ from flask import Flask
 from flask import request
 from supabase_client import supabase
 from dotenv import load_dotenv
+from NER.main import pdf_to_text, extract_assignments, extract_class_location, extract_class_title
+from calendar_service import CalendarService
 
 load_dotenv()
 app = Flask(__name__)
 
 
-@app.route('/api/pdf', methods=['GET'])
-def get_pdf():
+@app.route('/api/calendar', methods=['POST'])
+def load_calendar():
   data = request.get_json()
+  token = data.get('token')
   file_path = data.get('file_path')
+
+  service = CalendarService(token)
   
   def get_relative_path(full_url):
     return full_url.split("/public/pdfs/", 1)[1]
@@ -23,16 +28,38 @@ def get_pdf():
       f.write(response)
     # call pdf to text function here
 
+    text = pdf_to_text(file_name)
+    calendar_data = parse_info(text)
+    response = service.add_to_calendar(calendar_data)
+
+    if not response:
+      raise Exception("Unable to add to calendar")
+
     # delete pdf here
     os.remove(file_name)
 
-    return {"message": "Successfully read and converted pdf"}, 200
-
+    return {"message": "Successfully added to calendar"}, 200
 
   except FileNotFoundError:
     return {"error": str(e)}, 500
   except Exception as e:
     return {"error": str(e)}, 500
+  
+def parse_info(text):
+
+  assignments = extract_assignments(text)
+  location = extract_class_location(text)
+  class_name = extract_class_title(text)
+  
+  
+  if not assignments:
+    raise Exception("Assignments not found")
+  if not location:
+    raise Exception("Location not found")
+  if not class_name:
+    raise Exception("Class name is not found")
+
+  return [class_name, location, assignments]
 
 @app.route('/api/task', methods=['GET', 'POST', 'DELETE', 'PUT'])
 def task():
@@ -175,4 +202,7 @@ def delete_task(user_id, task_id):
     return {"message": f"Task {task_id} deleted"}, 200
   except Exception as e:
     return {"error": str(e)}, 500
+
+    
+ 
      
