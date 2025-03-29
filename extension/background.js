@@ -2,10 +2,7 @@ console.log("Hello, world!");
 
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_KEY
-);
+
 
 chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     if (msg.type === "PDF_SELECTED") {

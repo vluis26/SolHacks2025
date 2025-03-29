@@ -1,9 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_KEY
-);
 
 const loginButton = document.getElementById("login-button");
 const logoutButton = document.getElementById("logout-button");
@@ -43,6 +39,7 @@ loginButton.addEventListener('click', async () => {
 
                 sessionStorage.setItem('google_access_token', accessToken);
                 sessionStorage.setItem('google_id_token', idToken);
+                console.log(accessToken);
         
                 const { data, error } = await supabase.auth.signInWithIdToken({
                     provider: "google",
@@ -56,7 +53,6 @@ loginButton.addEventListener('click', async () => {
                     console.log(`Error authenticating with supabase: ${error.message}`);
                 } else {
                     console.log("Success");
-                    isAuthenticated = true;
                     authenticated.classList.remove("hidden");
                     unauthenticated.classList.add("hidden");
                     
