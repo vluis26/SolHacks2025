@@ -9,15 +9,72 @@ from googleapiclient.errors import HttpError
 
 
 class CalendarService:
-  def __init__(self, provider_token):
-    creds = Credentials(token=provider_token)
+  def __init__(self, access_token):
+    creds = Credentials(token=access_token)
     self.service = build('calendar', 'v3', credentials=creds)
   def add_to_calendar(self, info):
-    now = datetime.utcnow().isoformat() + 'Z'
-    result = self.service.events().list(calendarId='primary', timeMin=now, eventTypes='default', maxResults=10, singleEvents=True, orderBy='updated').execute()
-    events = result.get('items', [])
+    name = info["class_name"]
+    location = info["location"]
+    assignments = info["assignments"]
 
+    events = []
+    for (date, assignment) in assignments:
+      event = {
+        "summary": f"{name} - {assignment}",
+        "location": location,
+        "description": f"Assignment for {name}: {assignment}",
+        "start": {
+            "date": date
+        },
+        "endTimeUnspecified": True,
+      }
+
+      created_event = (
+          self.service.events()
+          .insert(calendarId="primary", body=event)
+          .execute()
+      )
+      events.append(created_event)
+      
     return events
+  
+  def create_event(self, summary, description, due_date):
+        event_body = {
+            "summary": summary,
+            "description": description or "",
+            "start": {
+                "date": due_date
+            },
+            "endTimeUnspecified": True,
+        }
+
+        created_event = (
+            self.service.events()
+            .insert(calendarId="primary", body=event_body)
+            .execute()
+        )
+        return created_event.get("id")
+
+  def update_event(self, event_id, summary=None, description=None, due_date=None):
+      event = self.service.events().get(calendarId="primary", eventId=event_id).execute()
+      if summary is not None:
+          event["summary"] = summary
+      if description is not None:
+          event["description"] = description
+      if due_date is not None:
+          event["date"] = {"date": due_date}
+
+      updated_event = (
+          self.service.events()
+          .update(calendarId="primary", eventId=event_id, body=event)
+          .execute()
+      )
+      return updated_event.get("id")
+
+  def delete_event(self, event_id):
+      self.service.events().delete(calendarId="primary", eventId=event_id).execute()
+      return True
+
 
 
 
