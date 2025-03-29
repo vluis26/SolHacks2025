@@ -10,6 +10,79 @@ load_dotenv()
 app = Flask(__name__)
 
 
+
+@app.route('/api/course', methods=['GET', 'POST', 'DELETE'])
+def course():
+    data = request.get_json() or {}
+
+    user_id = data.get("user_id")
+    course_id = data.get("course_id")
+
+    if request.method == 'POST':
+      name = data.get("name")
+      location = data.get("location")
+
+      if not all([user_id, name, location]):
+        return {"error": "user_id, name, and location are required"}, 400
+
+      try:
+        response = (
+          supabase
+          .table("course")
+          .insert({
+            "user_id": user_id,
+            "name": name,
+            "location": location
+          })
+          .execute()
+        )
+        if not response.data:
+          return {"message": "No course created"}, 400
+
+        created_course = response.data[0]
+        return created_course, 200
+      except Exception as e:
+        return {"error": str(e)}, 500
+
+    elif request.method == 'GET':
+      query = supabase.table("course").select("*")
+
+      if user_id:
+        query = query.eq("user_id", user_id)
+
+      if course_id:
+        query = query.eq("course_id", course_id)
+
+      try:
+        response = query.execute()
+        if not response.data:
+          return {"message": "No courses found"}, 404
+        return response.data, 200
+      except Exception as e:
+        return {"error": str(e)}, 500
+
+    elif request.method == 'DELETE':
+      if not all([user_id, course_id]):
+        return {"error": "user_id and course_id are required"}, 400
+
+      try:
+        response = (
+          supabase
+          .table("course")
+          .delete()
+          .eq("course_id", course_id)
+          .eq("user_id", user_id)
+          .execute()
+        )
+        if response.count == 0:
+          return {"message": "No matching course found to delete"}, 404
+
+        return {"message": f"Course {course_id} deleted"}, 200
+      except Exception as e:
+        return {"error": str(e)}, 500
+  
+
+
 @app.route('/api/calendar', methods=['POST'])
 def load_calendar():
   data = request.get_json()
@@ -86,32 +159,32 @@ def task():
             return "Non-null fields are missing", 400
         
         return create_task(
-            user_id=user_id,
-            course_id=course_id,
-            name=name,
-            type=data.get('type'),
-            is_completed=data.get('is_completed'),
-            due_date=data.get('due_date'),
-            note=data.get('note'),
-            calendar_link=data.get('calendar_link'),
-            calendar_service=service
+          user_id=user_id,
+          course_id=course_id,
+          name=name,
+          type=data.get('type'),
+          is_completed=data.get('is_completed'),
+          due_date=data.get('due_date'),
+          note=data.get('note'),
+          calendar_link=data.get('calendar_link'),
+          calendar_service=service
         )
 
     elif request.method == 'PUT':
         name = data.get('name')
         if not all([user_id, task_id, name]):
-            return "Non-null fields are missing", 400
+          return "Non-null fields are missing", 400
         
         return update_task(
-            user_id=user_id,
-            task_id=task_id,
-            name=name,
-            type=data.get('type'),
-            is_completed=data.get('is_completed'),
-            due_date=data.get('due_date'),
-            note=data.get('note'),
-            calendar_link=data.get('calendar_link'),
-            calendar_service=service
+          user_id=user_id,
+          task_id=task_id,
+          name=name,
+          type=data.get('type'),
+          is_completed=data.get('is_completed'),
+          due_date=data.get('due_date'),
+          note=data.get('note'),
+          calendar_link=data.get('calendar_link'),
+          calendar_service=service
         )
 
     elif request.method == 'GET':
@@ -148,8 +221,6 @@ def create_task(user_id, course_id=None, name=None, type=None, is_completed=None
     task_id = created_task["task_id"]
     
     if calendar_service and due_date:
-      
-      # FAILING HERE
       created_event = calendar_service.create_event(
         summary=name,
         description=note,
@@ -206,36 +277,36 @@ def update_task(user_id, task_id, name=None, type=None, is_completed=None, due_d
     
     if calendar_service:
       if old_event_id:
-          updated_event = calendar_service.update_event(
-            event_id=old_event_id,
+        updated_event = calendar_service.update_event(
+          event_id=old_event_id,
+          summary=name,
+          description=note,
+          due_date=due_date
+        )
+        if updated_event:
+          fields_to_update["calendar_link"] = updated_event["htmlLink"]
+          fields_to_update["calendar_event_id"] = updated_event["id"]
+      else:
+        if due_date:
+          created_event = calendar_service.create_event(
             summary=name,
             description=note,
             due_date=due_date
           )
-          if updated_event:
-            fields_to_update["calendar_link"] = updated_event["htmlLink"]
-            fields_to_update["calendar_event_id"] = updated_event["id"]
-      else:
-          if due_date:
-            created_event = calendar_service.create_event(
-              summary=name,
-              description=note,
-              due_date=due_date
-            )
-            if created_event:
-              fields_to_update["calendar_link"] = created_event["htmlLink"]
-              fields_to_update["calendar_event_id"] = created_event["id"]
+          if created_event:
+            fields_to_update["calendar_link"] = created_event["htmlLink"]
+            fields_to_update["calendar_event_id"] = created_event["id"]
 
-    update_resp = (
-        supabase.table("task")
-        .update(fields_to_update)
-        .eq("task_id", task_id)
-        .execute()
+    update_response = (
+      supabase.table("task")
+      .update(fields_to_update)
+      .eq("task_id", task_id)
+      .execute()
     )
-    if not update_resp.data:
+    if not update_response.data:
         return {"message": "No tasks found after update"}, 404
 
-    return update_resp.data, 200
+    return update_response.data, 200
     
   except Exception as e:
     return {"error": str(e)}, 500
