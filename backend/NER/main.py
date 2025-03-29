@@ -1,6 +1,5 @@
 import PyPDF2
 import re
-import spacy
 from spacy.tokens import DocBin
 
 # Function to extract text from PDF
