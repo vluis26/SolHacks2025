@@ -1,6 +1,7 @@
 import random
 import PyPDF2
 import re
+import spacy
 from spacy.tokens import DocBin
 from spacy.training.example import Example
 from spacy.training import offsets_to_biluo_tags
