@@ -9,4 +9,4 @@ def pdf_to_text(pdf_path):
     
     return text
 
-print(pdf_to_text('./astr.pdf'))
+print(pdf_to_text('NER/PLAN 363 - Syllabus - Spring 2025 v3.pdf'))
