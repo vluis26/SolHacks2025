@@ -148,6 +148,8 @@ def create_task(user_id, course_id=None, name=None, type=None, is_completed=None
     task_id = created_task["task_id"]
     
     if calendar_service and due_date:
+      
+      # FAILING HERE
       created_event = calendar_service.create_event(
         summary=name,
         description=note,
@@ -211,8 +213,8 @@ def update_task(user_id, task_id, name=None, type=None, is_completed=None, due_d
             due_date=due_date
           )
           if updated_event:
-            fields_to_update["calendar_link"] = updated_event.get("htmlLink")
-            fields_to_update["calendar_event_id"] = updated_event.get("id")
+            fields_to_update["calendar_link"] = updated_event["htmlLink"]
+            fields_to_update["calendar_event_id"] = updated_event["id"]
       else:
           if due_date:
             created_event = calendar_service.create_event(
@@ -221,14 +223,13 @@ def update_task(user_id, task_id, name=None, type=None, is_completed=None, due_d
               due_date=due_date
             )
             if created_event:
-              fields_to_update["calendar_link"] = created_event.get("htmlLink")
-              fields_to_update["calendar_event_id"] = created_event.get("id")
+              fields_to_update["calendar_link"] = created_event["htmlLink"]
+              fields_to_update["calendar_event_id"] = created_event["id"]
 
     update_resp = (
         supabase.table("task")
         .update(fields_to_update)
         .eq("task_id", task_id)
-        .single()
         .execute()
     )
     if not update_resp.data:
