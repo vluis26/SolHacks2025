@@ -22,6 +22,18 @@ def extract_class_title(text):
         extracted_data.append(data)
     return extracted_data
 
+#Function to extract class location
+def extract_class_location(text):
+    pattern = r'\b(?:class(?:room| location)|lecture hall)\s*:\s*([A-Za-z0-9\s\-]+)'
+    match = re.findall(pattern, text, re.IGNORECASE)
+    split_txt = match[0].split()
+    if split_txt[2].strip()[0].upper() == 'H':
+        return " ".join(split_txt[0:3])
+    if split_txt[2][0] != 'H' or split_txt[2][0] != 'h':
+        return " ".join(split_txt[0:2])
+    else:
+        return " ".join(split_txt[0:3])
+
 # Function to extract dates and assignments
 def extract_assignments(text):
     pattern = r"(\d{1,2}/\d{1,2})\s+(.*?(?:Quiz|Exam|Financial Plan|Paper|Due).*)"
@@ -60,12 +72,12 @@ def create_training_data(train_data, nlp):
 
 # Main execution
 if __name__ == "__main__":
-    pdf_path = "NER/2-24 syllabus.pdf"
+    pdf_path = "NER/Astr_100_Syllabus_Sp25.pdf"
     
     print("Extracting text from PDF...")
     syllabus_text = pdf_to_text(pdf_path)
-    # print(extract_class_title(syllabus_text)[0])
-    print(syllabus_text)
+    print(extract_class_location(syllabus_text))
+    # print(syllabus_text)
 
     # print("Identifying assignments and dates...")
     # assignments = extract_assignments(syllabus_text)
