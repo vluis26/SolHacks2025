@@ -29,7 +29,6 @@ class CalendarService:
         "end": {
             "date": date 
         },
-        "endTimeUnspecified": True,
       }
 
       created_event = (
@@ -53,7 +52,6 @@ class CalendarService:
             "dateTime": due_date,
             "timeZone": 'America/Los_Angeles'
         },
-        "endTimeUnspecified": True,
     }
 
     created_event = (
