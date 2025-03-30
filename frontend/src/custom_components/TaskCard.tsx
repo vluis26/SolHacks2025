@@ -38,9 +38,9 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
         <Card className={`< ${getCardColor(task.type!)}`}>
             <CardContent className="p-4">
                 <div className="flex items-start justify-between">
-                    <Checkbox id={`task-${task.id}`} className="mt-1" />
+                    <Checkbox id={`task-${task.task_id}`} className="mt-1" />
                     <div className="flex-1 ml-2">
-                        <h3 className="font-medium text-lg">{task.title}</h3>
+                        <h3 className="font-medium text-lg">{task.name}</h3>
                         {isEditing ? (
                             <div className="mt-2">
                                 <textarea
@@ -61,7 +61,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onDelete }) => {
                                 {note ? note : <span className="text-muted-foreground italic">Click to add notes...</span>}
                             </div>
                         )}
-                        <div className="text-sm text-blue-500 mt-4">Due: {task.dueDate}</div>
+                        <div className="text-sm text-blue-500 mt-4">Due: {task.due_date}</div>
                     </div>
 
                     <DropdownMenu>

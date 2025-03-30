@@ -2,8 +2,6 @@ console.log("Hello, world!");
 
 import { createClient } from "@supabase/supabase-js";
 
-
-
 chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
     if (msg.type === "PDF_SELECTED") {
         const binary = atob(msg.base64);
@@ -24,7 +22,22 @@ chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
             console.error("Upload failed:", error);
           } else {
             console.log("Uploaded:", data);
-        }
+
+            chrome.storage.local.get(["access_token", "refresh_token"], (result) => {
+                const accessToken = result.access_token;
+                const refreshToken = result.refresh_token;
+              
+                if (!accessToken) {
+                  console.error("Missing tokens");
+                  sendResponse({ success: false });
+                  return;
+                }
+              
+                const dashboardUrl = `http://localhost:5173/?access_token=${accessToken}&refresh_token=${refreshToken}`;
+                chrome.tabs.create({ url: dashboardUrl });
+                sendResponse({ success: true });
+              });
+            }
 
         sendResponse({ success: !error });
         return true;

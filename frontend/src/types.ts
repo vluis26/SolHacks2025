@@ -1,10 +1,11 @@
 export interface Task {
-    id: string | number
-    title?: string
-    completed?: boolean
-    type?: string
-    dueDate?: string
+    task_id: string | number
+    name: string
+    is_completed: boolean
+    due_date: string
     note: string
+    type: string
+    calendar_link: string
 }
 
 export interface Course {
@@ -13,4 +14,3 @@ export interface Course {
     code: string
     tasks: Task[]
   }
-  

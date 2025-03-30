@@ -10,12 +10,42 @@ import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import CourseRow from "./CourseRow"
-import courses from "@/courses"
+import { useEffect, useState } from "react"
+// import courses from "@/courses"
+import { useSupabaseAuth } from "../SupabaseAuthContext"
+import { Course } from "@/types"
+
 
 type DashboardProps = {
 }
 
 const Dashboard: React.FC<DashboardProps> = () => {
+  const { user } = useSupabaseAuth()
+  const [courses, setCourses] = useState<Course[]>([]);
+
+  useEffect(() => {
+    const getCourses = async () => {
+      if (!user) return;
+  
+      try {
+        const response = await fetch("http://127.0.0.1:5000/api/course", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ user_id: user.id }),
+        });
+  
+        const data = await response.json();
+        setCourses(data);
+      } catch (error) {
+        console.error("Failed to fetch courses:", error);
+      }
+    };
+  
+    getCourses();
+  }, []);
+
     return (
         <div className="flex flex-col min-h-screen">
         <header className="flex h-14 lg:h-[60px] items-center gap-4 border-b bg-muted/40 px-6">
@@ -91,7 +121,7 @@ const Dashboard: React.FC<DashboardProps> = () => {
           </div>
   
           <div className="mt-8">
-            {courses.map((course) => (
+            { courses && courses.map((course) => (
               <CourseRow key={course.id} course={course} />
             ))}
           </div>

@@ -35,16 +35,32 @@ loginButton.addEventListener('click', async () => {
                 const redirected = new URL(redirectUrl);
                 const params = new URLSearchParams(redirected.hash.substring(1));
                 const idToken = params.get('id_token');
-                const accessToken = params.get('access_token');
+                const googleAccessToken = params.get('access_token');
 
-                sessionStorage.setItem('google_access_token', accessToken);
-                sessionStorage.setItem('google_id_token', idToken);
-                console.log(accessToken);
+                const res = await fetch("https://deletxexbnuigbpfddkp.supabase.co/functions/v1/issue-supabase-token", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ id_token: idToken }),
+                  })
+                
+                const { session, e } = await res.json()
+
+                if (e || !session) {
+                    console.error("Could not get Supabase session:", e)
+                    return
+                  }
+
+                console.log(googleAccessToken);
         
                 const { data, error } = await supabase.auth.signInWithIdToken({
                     provider: "google",
                     token: idToken
                 });
+
+                chrome.storage.local.set({
+                    access_token: session.access_token,
+                    refresh_token: session.refresh_token 
+                  });
 
                 const user = data.user;
                 const email = user.email;

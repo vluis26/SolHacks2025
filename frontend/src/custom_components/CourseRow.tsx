@@ -27,7 +27,7 @@ const CourseRow: React.FC<CourseRowProps> = ({ course }) => {
 
       
         const handleDeleteTask = (taskId: number) => {
-          const newTasks = tasks.filter((task) => task.id !== taskId)
+          const newTasks = tasks.filter((task) => task.task_id !== taskId)
           setTasks(newTasks)
         }
       
