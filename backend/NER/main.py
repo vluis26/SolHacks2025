@@ -634,6 +634,264 @@ train_data += [
     )
 ]
 
+train_data += [
+    (
+        "The midterm exam is on April 20.",
+        {
+            "entities": [
+                (4, 16, "ASSIGNMENT"),   # midterm exam
+                (23, 31, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "Final exam: May 5",
+        {
+            "entities": [
+                (0, 10, "ASSIGNMENT"),   # midterm exam
+                (12, 17, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "Quiz 2 is due on March 12",
+        {
+            "entities": [
+                (0, 6, "ASSIGNMENT"),   # midterm exam
+                (17, 25, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "April 7 – Midterm 2",
+        {
+            "entities": [
+                (10, 19, "ASSIGNMENT"),   # midterm exam
+                (0, 7, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    ("The final exam is on May 10.", {"entities": [(4, 14, "ASSIGNMENT"),(21, 27, "DATE")]}),
+    ("The research paper is due on June 5.", {"entities": [(4, 18, "ASSIGNMENT"),(29, 35, "DATE")]}),
+    ("The presentation will take place on July 15.", {"entities": [(4, 16, "ASSIGNMENT"),(36, 43, "DATE")]}),
+    ("The group project deadline is March 22.", {"entities": [(4, 17, "ASSIGNMENT"),(30, 38, "DATE")]}),
+    ("The homework is due on September 8.", {"entities": [(4, 12, "ASSIGNMENT"),(23, 34, "DATE")]}),
+    ("The midterm exam is on April 12.", {"entities": [(4, 16, "ASSIGNMENT"),(23, 31, "DATE")]}),
+    ("The midterm is on March 20.", {"entities": [(4, 11, "ASSIGNMENT"),(18, 26, "DATE")]}),
+    ("The final is on April 1.", {"entities": [(4, 9, "ASSIGNMENT"),(16, 23, "DATE")]})
+]
+
+train_data += [
+    (
+        "Week 1 – Introduction to the course. No readings due.",
+        {
+            "entities": []
+        }
+    ),
+    (
+        "Week 2 – Personal Budgeting and Saving Strategies\nReading: Chapters 1 & 2\nAssignment: Budget Worksheet Due 1/22",
+        {
+            "entities": [
+                (86, 106, "ASSIGNMENT"),   # Budget Worksheet Due
+                (107, 111, "DATE")          # 1/22
+            ]
+        }
+    ),
+    (
+        "Week 3 – Understanding Credit and Loans\nReading: Chapter 3\nQuiz #1 – 1/29",
+        {
+            "entities": [
+                (59, 66, "ASSIGNMENT"),   # Quiz #1
+                (69, 73, "DATE")          # 1/29
+            ]
+        }
+    ),
+    (
+        "Week 4 – Credit Scores and Reports\nReading: Chapter 4\nAssignment: Credit Report Analysis – Due Feb 5",
+        {
+            "entities": [
+                (66, 88, "ASSIGNMENT"),   # Credit Report Analysis
+                (95, 100, "DATE")          # Feb 5
+            ]
+        }
+    ),
+    (
+        "Week 5 – Debt Management\nMidterm Exam – February 12",
+        {
+            "entities": [
+                (25, 37, "ASSIGNMENT"),   # Midterm Exam
+                (40, 51, "DATE")          # February 12
+            ]
+        }
+    ),
+    (
+        "Week 6 – Investment Fundamentals\nReading: Chapter 5\nIn-class Activity: Investment Game (2/19)",
+        {
+            "entities": [
+                (52, 86, "ASSIGNMENT"),   # In-class Activity: Investment Game
+                (88, 92, "DATE")          # 2/19
+            ]
+        }
+    ),
+    (
+        "Week 7 – Risk Management and Insurance\nAssignment: Insurance Plan Comparison due 2/26",
+        {
+            "entities": [
+                (51, 76, "ASSIGNMENT"),   # Insurance Plan Comparison
+                (81, 85, "DATE")          # 2/26
+            ]
+        }
+    ),
+    (
+        "Week 8 – Spring Break (No Class)",
+        {
+            "entities": []
+        }
+    ),
+    (
+        "Week 9 – Taxes and Financial Planning\nReading: Chapters 6 & 7\nQuiz #2 – March 12",
+        {
+            "entities": [
+                (62, 69, "ASSIGNMENT"),   # Quiz #2
+                (72, 80, "DATE")          # March 12
+            ]
+        }
+    )
+]
+
+train_data += [
+	("The professor explained the topic well.", {"entities": []}),
+    ("We will have a discussion next week.", {"entities": []}),
+    ("Office hours are available on Thursdays.", {"entities": []}),
+    ("Students should review the material before class.", {"entities": []}),
+    ("Make sure to check the syllabus for details.", {"entities": []}),
+    ("The midterm exams are scheduled for February 3, Mar 3, and April 7. All midterms are held in-class during our usual class meeting time. The final exam is May 5 from 4:00-7:00 pm.", {"entities": [(4,17, "ASSIGNMENT"), (36, 46, "DATE"), (48, 53, "DATE"), (59,66,"DATE"), (140,150,"ASSIGNMENT"), (154, 159, "DATE")]})
+
+]
+
+train_data += [
+    (
+        "The final paper is due on April 20, 2025.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # Quiz #2
+                (26, 40, "DATE")          # March 12
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final paper is due on April 10, 2025.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # Quiz #2
+                (26, 40, "DATE")          # March 12
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final paper is due on April 30, 2026.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # Quiz #2
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final paper is due on April 10, 2021.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # Quiz #2
+                (26, 40, "DATE")          # March 12
+            ]
+        }
+    )
+]
+train_data += [
+    (
+        "The final paper is due on April 20, 2025.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # Quiz #2
+                (26, 40, "DATE")          # March 12
+            ]
+        }
+    )
+]
+
+#####
+train_data += [
+    (
+        "The event will be held on January 5, 2025. Make sure to mark your calendar for the conference on February 14, 2025.",
+        {
+            "entities": [
+                (26, 41, "DATE"),   # January 5, 2025
+                (97, 114, "DATE")   # February 14, 2025
+            ]
+        }
+    ),
+    (
+        "Our meeting is scheduled for March 2, 2025. The follow-up session is on April 10, 2025.",
+        {
+            "entities": [
+                (29, 42, "DATE"),   # March 2, 2025
+                (72, 86, "DATE")    # April 10, 2025
+            ]
+        }
+    ),
+    (
+        "The first draft is due on May 3, 2025. The final submission deadline is June 21, 2025.",
+        {
+            "entities": [
+                (26, 37, "DATE"),   # May 3, 2025
+                (72, 85, "DATE")    # June 21, 2025
+            ]
+        }
+    ),
+    (
+        "The summer course begins on June 1, 2025. Final exams will be held on August 15, 2025.",
+        {
+            "entities": [
+                (28, 40, "DATE"),   # June 1, 2025
+                (70, 85, "DATE")    # August 15, 2025
+            ]
+        }
+    ),
+    (
+        "The seminar starts on July 20, 2025, and ends on July 25, 2025.",
+        {
+            "entities": [
+                (22, 35, "DATE"),   # July 20, 2025
+                (49, 62, "DATE")    # July 25, 2025
+            ]
+        }
+    )
+]
+
+
+
+
+
 # Function to format data for SpaCy training
 # def create_training_data(train_data, nlp):
 #     db = DocBin()
@@ -660,10 +918,10 @@ train_data += [
 
 # Main execution
 if __name__ == "__main__":
-    pdf_path = "NER/PLAN 363 - Syllabus - Spring 2025 v3.pdf"
+    pdf_path = "backend/NER/PLAN 363 - Syllabus - Spring 2025 v3.pdf"
     
-    print("Extracting text from PDF...")
-    syllabus_text = pdf_to_text(pdf_path)
+    # print("Extracting text from PDF...")
+    # syllabus_text = pdf_to_text(pdf_path)
     # print(syllabus_text)
 
 
@@ -747,4 +1005,4 @@ if __name__ == "__main__":
     print(scores)
 
     # Saving the model to local machine
-    nlp.to_disk("assignment_model")
+    # nlp.to_disk("assignment_model")
