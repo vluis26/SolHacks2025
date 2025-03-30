@@ -3,8 +3,10 @@ from flask import Flask
 from flask import request
 from supabase_client import supabase
 from dotenv import load_dotenv
-from NER.main import pdf_to_text, extract_assignments, extract_class_location, extract_class_title
+from NER.main import pdf_to_text, extract_class_location, extract_class_title
+import spacy
 from calendar_service import CalendarService
+
 
 load_dotenv()
 app = Flask(__name__)
@@ -102,8 +104,15 @@ def load_calendar():
     # call pdf to text function here
 
     text = pdf_to_text(file_name)
-    calendar_data = parse_info(text)
-    response = service.add_to_calendar(calendar_data)
+    
+    #load model
+    class_title = extract_class_title(text)
+    class_location = extract_class_location(text)
+    
+    nlp = spacy.load("../assignment_model")
+    doc = nlp(text)
+    
+    response = service.add_to_calendar(doc, class_title, class_location)
 
     if not response:
       raise Exception("Unable to add to calendar")
@@ -121,28 +130,6 @@ def load_calendar():
   except Exception as e:
     return {"error": str(e)}, 500
   
-def parse_info(text):
-
-  assignments = extract_assignments(text)
-  location = extract_class_location(text)
-  class_name = extract_class_title(text)
-  
-  
-  if not assignments:
-    raise Exception("Assignments not found")
-  if not location:
-    raise Exception("Location not found")
-  if not class_name:
-    raise Exception("Class name is not found")
-
-  dict = {}
-
-  dict["assignments"] = assignments
-  dict["location"] = location
-  dict["class_name"] = class_name
-
-  return dict 
-
 @app.route('/api/task', methods=['GET', 'POST', 'DELETE', 'PUT'])
 def task():
     data = request.get_json()
@@ -153,49 +140,49 @@ def task():
     task_id = data.get('task_id')
 
     if request.method == 'POST':
-        course_id = data.get('course_id')
-        name = data.get('name')
-        if not all([user_id, course_id, name]):
-            return "Non-null fields are missing", 400
-        
-        return create_task(
-          user_id=user_id,
-          course_id=course_id,
-          name=name,
-          type=data.get('type'),
-          is_completed=data.get('is_completed'),
-          due_date=data.get('due_date'),
-          note=data.get('note'),
-          calendar_link=data.get('calendar_link'),
-          calendar_service=service
-        )
+      course_id = data.get('course_id')
+      name = data.get('name')
+      if not all([user_id, course_id, name]):
+        return "Non-null fields are missing", 400
+      
+      return create_task(
+        user_id=user_id,
+        course_id=course_id,
+        name=name,
+        type=data.get('type'),
+        is_completed=data.get('is_completed'),
+        due_date=data.get('due_date'),
+        note=data.get('note'),
+        calendar_link=data.get('calendar_link'),
+        calendar_service=service
+      )
 
     elif request.method == 'PUT':
-        name = data.get('name')
-        if not all([user_id, task_id, name]):
-          return "Non-null fields are missing", 400
-        
-        return update_task(
-          user_id=user_id,
-          task_id=task_id,
-          name=name,
-          type=data.get('type'),
-          is_completed=data.get('is_completed'),
-          due_date=data.get('due_date'),
-          note=data.get('note'),
-          calendar_link=data.get('calendar_link'),
-          calendar_service=service
-        )
+      name = data.get('name')
+      if not all([user_id, task_id, name]):
+        return "Non-null fields are missing", 400
+      
+      return update_task(
+        user_id=user_id,
+        task_id=task_id,
+        name=name,
+        type=data.get('type'),
+        is_completed=data.get('is_completed'),
+        due_date=data.get('due_date'),
+        note=data.get('note'),
+        calendar_link=data.get('calendar_link'),
+        calendar_service=service
+      )
 
     elif request.method == 'GET':
-        if not user_id:
-            return {"error": "No user id specified"}, 400
-        return get_tasks(user_id, task_id)
+      if not user_id:
+        return {"error": "No user id specified"}, 400
+      return get_tasks(user_id, task_id)
 
     elif request.method == 'DELETE':
-        if not all([user_id, task_id]):
-            return {"error": "No task id or user id specified"}, 400
-        return delete_task(user_id, task_id, calendar_service=service)
+      if not all([user_id, task_id]):
+        return {"error": "No task id or user id specified"}, 400
+      return delete_task(user_id, task_id, calendar_service=service)
 
 
 def create_task(user_id, course_id=None, name=None, type=None, is_completed=None, due_date=None, note=None, calendar_link=None, calendar_service=None):
