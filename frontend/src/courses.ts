@@ -1,0 +1,97 @@
+// const courses = [
+//   {
+//     id: 1,
+//     title: "Introduction to Computer Science",
+//     code: "CS101",
+//     tasks: [
+//       {
+//         task_id: 101,
+//         name: "Midterm Exam",
+//         type: "Exam",
+//         due_date: "Apr 15, 2025",
+//         note: "Need to review chapter 4 again",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//       {
+//         task_id: 102,
+//         name: "Programming Assignment #3",
+//         type: "Assignment",
+//         due_date: "Apr 22, 2025",
+//         note: "Start with quicksort implementation",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//       {
+//         task_id: 103,
+//         name: "Quiz on Data Structures",
+//         type: "Quiz",
+//         due_date: "Apr 29, 2025",
+//         note: "",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     title: "Calculus I",
+//     code: "MATH201",
+//     tasks: [
+//       {
+//         task_id: 201,
+//         name: "Derivatives Problem Set",
+//         type: "Assignment",
+//         due_date: "Apr 18, 2025",
+//         note: "",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//       {
+//         task_id: 202,
+//         name: "Final Exam",
+//         type: "Exam",
+//         due_date: "May 10, 2025",
+//         note: "",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     title: "Introduction to Psychology",
+//     code: "PSYC101",
+//     tasks: [
+//       {
+//         task_id: 301,
+//         name: "Research Paper",
+//         type: "Assignment",
+//         due_date: "Apr 25, 2025",
+//         note: "",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//       {
+//         task_id: 302,
+//         name: "Group Presentation",
+//         type: "Assignment",
+//         due_date: "May 5, 2025",
+//         note: "Focus on non-verbal communication",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//       {
+//         task_id: 303,
+//         name: "Midterm Exam",
+//         type: "Exam",
+//         due_date: "Apr 20, 2025",
+//         note: "",
+//         is_completed: false,
+//         calendar_link: "",
+//       },
+//     ],
+//   },
+// ];
+
+// export default courses;
