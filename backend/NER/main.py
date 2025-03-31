@@ -4,7 +4,7 @@ import re
 import spacy
 from spacy.tokens import DocBin
 from spacy.training.example import Example
-from spacy.training import offsets_to_biluo_tags
+from spacy.util import minibatch, compounding
 
 
 def pdf_to_text(pdf_path):
@@ -317,7 +317,6 @@ train_data+= [
     "Midterm exam on May 20th.",
     {
         "entities": [
-            (16, 24, "DATE"),       # 3/24
             (0, 7, "ASSIGNMENT"), # Financial Plan #2 due
         ]
     }
@@ -329,7 +328,6 @@ train_data+= [
     "Final exam on August 14th.",
     {
         "entities": [
-            (14, 25, "DATE"),       # 3/24
             (0, 5, "ASSIGNMENT"), # Financial Plan #2 due
         ]
     }
@@ -341,7 +339,6 @@ train_data+= [
     "Final exam on August 25th.",
     {
         "entities": [
-            (14, 25, "DATE"),       # 3/24
             (0, 5, "ASSIGNMENT"), # Financial Plan #2 due
         ]
     }
@@ -353,7 +350,6 @@ train_data+= [
     "The midterm exam will be on May 4th.",
     {
         "entities": [
-            (28, 35, "DATE"),       # 3/24
             (4, 11, "ASSIGNMENT"), # Financial Plan #2 due
         ]
     }
@@ -888,33 +884,333 @@ train_data += [
     )
 ]
 
+train_data += [
+    (
+        "2/3 Cash Management & Debt Chapters 3 & 4 Chapters 5 & 8 2/5 Financial Plan #1 Due Week 6 Well -Being Day 2/10 NO CLASS Quiz #1 2/12 Quiz #1",
+        {
+            "entities": [
+                (61, 78, "ASSIGNMENT"),   # Quiz #2
+                (57, 60, "DATE"),          # March 12
+                (128, 132, "DATE"),
+                (120, 127, "ASSIGNMENT")
+            ]
+        }
+    )
+]
 
+train_data += [
+    (
+        "3/19 Quiz #2 Week 12 Real Estate Chapter 8 Chapter 1 5 3/24 Financial Plan #2 due",
+        {
+            "entities": [
+                (5, 12, "ASSIGNMENT"),   # Quiz #2
+                (0, 4, "DATE"),          # March 12
+                (55, 59, "DATE"),
+                (60, 76, "ASSIGNMENT")
+            ]
+        }
+    )
+]
 
+train_data += [
+    (
+        "4/14 Quiz #3 Group Presentation 4/16 Week 16 Group Presentation 4/21",
+        {
+            "entities": [
+                (5, 12, "ASSIGNMENT"),   # Quiz #2
+                (0, 4, "DATE"),          # March 12
+                (64, 68, "DATE"),
+                (13, 31, "ASSIGNMENT")
+            ]
+        }
+    )
+]
 
+train_data += [
+    (
+        "The final paper is due on May 10.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # midterm exam
+                (26, 29, "DATE")         # April 20
+            ]
+        }
+    )
+]
 
-# Function to format data for SpaCy training
-# def create_training_data(train_data, nlp):
-#     db = DocBin()
-#     for date, assignment in train_data:
-#         text = f"{date} {assignment}"
-#         doc = nlp.make_doc(text)
-#         ents = []
+train_data += [
+    (
+        "The final paper is due on December 15th.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT")   # midterm exam
+            ]
+        }
+    )
+]
 
-#         start_date = 0
-#         end_date = len(date)
-#         start_assign = end_date + 1
-#         end_assign = start_assign + len(assignment)
+train_data += [
+    (
+        "The final exam is due on December 27th.",
+        {
+            "entities": [
+                (4, 14, "ASSIGNMENT")   # midterm exam
+            ]
+        }
+    )
+]
 
-#         entities = [(start_date, end_date, "DATE"), (start_assign, end_assign, "ASSIGNMENT")]
-        
-#         for start, end, label in entities:
-#             span = doc.char_span(start, end, label=label)
-#             if span is not None:
-#                 ents.append(span)
+train_data += [
+    (
+        "The midterm exam is on May 20.",
+        {
+            "entities": [
+                (4, 16, "ASSIGNMENT"),   # midterm exam
+                (23, 29, "DATE")         # April 20
+            ]
+        }
+    )
+]
 
-#         doc.ents = ents
-#         db.add(doc)
-#     return db
+train_data += [
+    (
+        "In-class exercise: Risk Tolerance Self -Assessment 8 Week 10 Spring Break 3/10 NO",
+        {
+            "entities": [
+                (0, 50, "ASSIGNMENT"),   # midterm exam
+                (74, 78, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "Financial Plan #3 due May 10.",
+        {
+            "entities": [
+                (0, 17, "ASSIGNMENT"),   # midterm exam
+                (22, 28, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "Final Presentation due September 19.",
+        {
+            "entities": [
+                (0, 18, "ASSIGNMENT"),   # midterm exam
+                (23, 35, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "midterm due August 2.",
+        {
+            "entities": [
+                (0, 7, "ASSIGNMENT"),   # midterm exam
+                (12, 20, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "final on December 17th.",
+        {
+            "entities": [
+                (0, 5, "ASSIGNMENT"),   # midterm exam
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final paper is due on December 15th.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # midterm exam
+                (26, 39, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final exam is due on December 27th.",
+        {
+            "entities": [
+                (4, 14, "ASSIGNMENT"),   # midterm exam
+                (25, 38, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm exam is on May 20.",
+        {
+            "entities": [
+                (4, 16, "ASSIGNMENT"),   # midterm exam
+                (23, 29, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm paper is due on November 23.",
+        {
+            "entities": [
+                (4, 17, "ASSIGNMENT"),   # midterm exam
+                (28, 39, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm paper is due on May 10.",
+        {
+            "entities": [
+                (4, 17, "ASSIGNMENT"),   # midterm exam
+                (28, 34, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm exam is on August 18.",
+        {
+            "entities": [
+                (4, 16, "ASSIGNMENT"),   # midterm exam
+                (23, 32, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm exam is on April 9.",
+        {
+            "entities": [
+                (4, 16, "ASSIGNMENT"),   # midterm exam
+                (23, 30, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final paper is on January 29.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # midterm exam
+                (22, 32, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final paper is due on February 22.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # midterm exam
+                (26, 37, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm paper is due on March 18.",
+        {
+            "entities": [
+                (4, 17, "ASSIGNMENT"),   # midterm exam
+                (28, 36, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm exam is on June 4.",
+        {
+            "entities": [
+                (4, 16, "ASSIGNMENT"),   # midterm exam
+                (23, 29, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final exam is on July 5.",
+        {
+            "entities": [
+                (4, 14, "ASSIGNMENT"),   # midterm exam
+                (21, 27, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The midterm exam is on August 21.",
+        {
+            "entities": [
+                (4, 16, "ASSIGNMENT"),   # midterm exam
+                (23, 32, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "Midterm on October 30.",
+        {
+            "entities": [
+                (0, 7, "ASSIGNMENT"),   # midterm exam
+                (11, 21, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
+train_data += [
+    (
+        "The final paper is due on April 30, 2026.",
+        {
+            "entities": [
+                (4, 15, "ASSIGNMENT"),   # midterm exam
+                (26, 40, "DATE")         # April 20
+            ]
+        }
+    )
+]
+
 
 # Main execution
 if __name__ == "__main__":
@@ -945,12 +1241,14 @@ if __name__ == "__main__":
 
 # Set up optimizer and other training configurations
     optimizer = nlp.begin_training()
-    for epoch in range(40):  # Run for 10 epochs
+    for epoch in range(38):
         print(f"Epoch {epoch+1}")
         random.shuffle(train_examples)
         losses = {}
-        # Batch training examples
-        nlp.update(train_examples, drop=0.5, losses=losses)
+        # Use minibatch training
+        batches = minibatch(train_examples, size=compounding(4.0, 32.0, 1.5))
+        for batch in batches:
+            nlp.update(batch, drop=0.35, losses=losses, sgd=optimizer)
         print(losses)
 
     eval_examples = []
@@ -1005,4 +1303,4 @@ if __name__ == "__main__":
     print(scores)
 
     # Saving the model to local machine
-    # nlp.to_disk("assignment_model")
+    nlp.to_disk("assignment_model")
